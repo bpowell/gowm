@@ -131,5 +131,14 @@ func main() {
 		if xerr != nil {
 			fmt.Printf("Error: %s\n", xerr)
 		}
+
+		switch what := ev.(type) {
+		case xproto.KeyPressEvent:
+			fmt.Printf("============KEY PRESS===============\n")
+			fmt.Printf("%d\n", what.Sequence)
+			break
+		default:
+			fmt.Printf("=====================================\n")
+		}
 	}
 }
