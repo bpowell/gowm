@@ -27,6 +27,31 @@ func main() {
 
 	// This is the default screen with all its associated info.
 	screen := setup.DefaultScreen(X)
+	root := screen.Root
+
+	resources, err := randr.GetScreenResources(X, root).Reply()
+	if err != nil {
+		fmt.Println(err)
+		return
+	}
+
+	for _, output := range resources.Outputs {
+		info, err := randr.GetOutputInfo(X, output, 0).Reply()
+		if err != nil {
+			fmt.Println(err)
+			return
+		}
+
+		if info.Connection == randr.ConnectionConnected {
+			bestMode := info.Modes[0]
+			for _, mode := range resources.Modes {
+				if mode.Id == uint32(bestMode) {
+					fmt.Printf("Width: %d, Height: %d\n",
+						mode.Width, mode.Height)
+				}
+			}
+		}
+	}
 
 	// Any time a new resource (i.e., a window, pixmap, graphics context, etc.)
 	// is created, we need to generate a resource identifier.
